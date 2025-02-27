@@ -1,0 +1,32 @@
+select * 
+from CATEGORIES
+full outer join AUTHORS
+on CATEGORIES.name=AUTHORS.name;
+
+select *
+from CATEGORIES
+left outer join AUTHORS
+on CATEGORIES.name=AUTHORS.name;
+
+select * 
+from CATEGORIES
+right outer join AUTHORS
+on CATEGORIES.name=AUTHORS.name;
+
+select *
+from CATEGORIES
+full outer join AUTHORS
+on CATEGORIES.name=AUTHORS.name;
+
+select *
+from CATEGORIES
+left join AUTHORS
+on CATEGORIES.name=AUTHORS.name
+where AUTHORS.name is null 
+
+select *
+from CATEGORIES
+ringht join AUTHORS
+on CATEGORIES.name=AUTHORS.name
+where CATEGORIES.name is null
+
