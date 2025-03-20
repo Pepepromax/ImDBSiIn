@@ -1,0 +1,32 @@
+
+ 
+
+CREATE TABLE Articulos_1 (
+    articulo varchar(15) DEFAULT NULL 
+);
+
+CREATE TABLE Articulos_2 (
+    articulo varchar(15) DEFAULT NULL 
+);
+
+insert into Articulos_1 ( articulo) values 
+('Azucar'),
+('Pan'),
+('Jugo'),
+('Refresco'),
+('Harina');
+
+
+insert into Articulos_2 ( articulo) values
+('Azucar'),
+('Pan'),
+('Mantequilla'),
+('Queso'),
+('Manzana');
+
+
+
+select * from Articulos_1 left outer join Articulos_2 on Articulos_1.articulo=Articulos_2.articulo
+union 
+select * from Articulos_1 right outer join Articulos_2 on Articulos_1.articulo=Articulos_2.articulo;
+
