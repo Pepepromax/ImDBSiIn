@@ -1,0 +1,80 @@
+JSP©
+PEPEPROMAX®
+
+DROP TABLE IF EXISTS WorkflowStatus;
+
+CREATE TABLE WorkflowStatus (
+    Workflow VARCHAR(50),
+    StepNumber INT,
+    Status VARCHAR(20)
+);
+
+-- Insertar datos de ejemplo
+INSERT INTO WorkflowStatus (Workflow, StepNumber, Status) VALUES
+('Alpha', 1, 'Error'),
+('Alpha', 2, 'Finalizado'),
+('Alpha', 3, 'Corriendo'),
+('Bravo', 1, 'Finalizado'),
+('Bravo', 2, 'Finalizado'),
+('Charlie', 1, 'Corriendo'),
+('Charlie', 2, 'Corriendo'),
+('Delta', 1, 'Error'),
+('Delta', 2, 'Error'),
+('Echo', 1, 'Corriendo'),
+('Echo', 2, 'Finalizado');
+
+-- Consulta para determinar el estado general de cada flujo de trabajo
+SELECT Workflow,
+    CASE 
+        WHEN COUNT(DISTINCT Status) = 1 THEN MAX(Status) -- Todos los pasos tienen el mismo estado
+        WHEN COUNT(DISTINCT Status) = 2 AND COUNT(CASE WHEN Status = 'Error' THEN 1 END) > 0 THEN 'Indeterminado' -- Error + Finalizado/Corriendo
+        WHEN COUNT(DISTINCT Status) = 2 AND NOT EXISTS (SELECT 1 FROM WorkflowStatus ws WHERE ws.Workflow = w.Workflow AND ws.Status = 'Error') THEN 'Corriendo' -- Solo Finalizado y Corriendo
+    END AS GeneralStatus
+FROM WorkflowStatus w
+GROUP BY Workflow;
+
+SELECT CONCAT(
+    'SELECT ', 
+    GROUP_CONCAT(CASE WHEN number IN (2, 3, 4) THEN column_name END SEPARATOR ', '),
+    ' FROM Productos WHERE Precio > 100'
+) AS Sintaxis
+FROM (
+    SELECT 1 AS number, 'Producto' AS column_name UNION ALL
+    SELECT 2, 'Precio' UNION ALL
+    SELECT 3, 'Disponibilidad' UNION ALL
+    SELECT 4, 'FROM' UNION ALL
+    SELECT 5, 'Productos' UNION ALL
+    SELECT 6, 'WHERE' UNION ALL
+    SELECT 7, 'Precio' UNION ALL
+    SELECT 8, '>' UNION ALL
+    SELECT 9, '100'
+) AS sequence;
+
+SELECT Producto, Precio, Disponibilidad FROM Productos WHERE Precio > 100
+
+DROP TABLE IF EXISTS Scores;
+
+CREATE TABLE Scores (
+    PlayerA INT,
+    PlayerB INT,
+    Score INT
+);
+
+-- Insertar datos de ejemplo
+INSERT INTO Scores (PlayerA, PlayerB, Score) VALUES
+(1001, 2002, 150),
+(1001, 2002, 150),
+(3003, 4004, 15),
+(3003, 4004, 40),
+(4004, 3003, 125);
+
+-- Consulta para calcular los marcadores globales sumando las puntuaciones
+SELECT PlayerA AS Player, SUM(Score) AS TotalScore
+FROM Scores
+GROUP BY PlayerA
+UNION ALL
+SELECT PlayerB AS Player, SUM(Score) AS TotalScore
+FROM Scores
+GROUP BY PlayerB
+ORDER BY Player;
+
