@@ -1,0 +1,35 @@
+
+CREATE TABLE astronautas (
+    Id INT,
+    Trabajo VARCHAR(50),
+    Misiones INT
+);
+
+
+INSERT INTO astronautas (Id, Trabajo, Misiones) VALUES
+(1, 'Navegador', 6),
+(2, 'Navegador', 12),
+(3, 'Navegador', 17),
+(4, 'Geólogo', 21),
+(5, 'Geólogo', 9),
+(6, 'Geólogo', 8),
+(7, 'Técnico', 13),
+(8, 'Técnico', 2),
+(9, 'Técnico', 7);
+
+
+WITH CTE_Rangos AS (
+  SELECT
+    Id,
+    Trabajo,
+    Misiones,
+    ROW_NUMBER() OVER (PARTITION BY Trabajo ORDER BY Misiones DESC) AS rn_max,
+    ROW_NUMBER() OVER (PARTITION BY Trabajo ORDER BY Misiones ASC) AS rn_min
+  FROM astronautas
+)
+SELECT
+  Trabajo,
+  MAX(CASE WHEN rn_max = 1 THEN Id END) AS Experimentados,
+  MAX(CASE WHEN rn_min = 1 THEN Id END) AS Menos_Experimentados
+FROM CTE_Rangos
+GROUP BY Trabajo;
